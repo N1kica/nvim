@@ -606,12 +606,17 @@ require('lazy').setup({
         angularls = {
           filetypes = { 'typescript', 'html', 'typescriptreact', 'typescript.tsx', 'angular.html' },
         },
+        emmet_language_server = {
+          filetypes = { 'typescript', 'html', 'ts', 'angular.html', 'angular' },
+        },
         pyright = {},
         rust_analyzer = {},
         tailwindcss = {},
         prettier = {},
         prettierd = {},
-        html = {},
+        html = {
+          filetypes = { 'typescript', 'html', 'typescriptreact', 'typescript.tsx', 'angular.html', 'angular' },
+        },
         cssls = {},
         somesass_ls = {},
 
@@ -729,12 +734,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          {
-            'rafamadriz/friendly-snippets',
-            config = function()
-              require('luasnip.loaders.from_vscode').lazy_load()
-            end,
-          },
+          -- {
+          --   'rafamadriz/friendly-snippets',
+          --   config = function()
+          --     require('luasnip.loaders.from_vscode').lazy_load()
+          --   end,
+          -- },
         },
       },
       'saadparwaiz1/cmp_luasnip',
