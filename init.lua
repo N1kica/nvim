@@ -610,6 +610,17 @@ require('lazy').setup({
           filetypes = { 'typescript', 'html', 'ts', 'angular.html', 'angular' },
         },
         pyright = {},
+        hls = {
+          cmd = { 'haskell-language-server-wrapper', '--lsp' },
+          filetypes = { 'haskell', 'lhaskell', 'hs' },
+          single_file_support = true,
+          settings = {
+            haskell = {
+              formattingProvider = 'ormolu',
+              cabalFormattingProvider = 'cabalfmt',
+            },
+          },
+        },
         rust_analyzer = {},
         tailwindcss = {},
         prettier = {},
