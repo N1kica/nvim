@@ -108,6 +108,9 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 vim.keymap.set('n', '<leader>y', '"*y', { desc = '[Y]ank to system clipboard' })
 vim.keymap.set('v', '<leader>y', '"*y', { desc = '[Y]ank to system clipboard' })
 
+-- Assuming you're using the built-in LSP client
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
