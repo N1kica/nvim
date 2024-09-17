@@ -110,6 +110,9 @@ vim.keymap.set('v', '<leader>y', '"*y', { desc = '[Y]ank to system clipboard' })
 
 -- Assuming you're using the built-in LSP client
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true })
+vim.keymap.set('v', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>.', '<C-^>', { noremap = true, silent = true })
+vim.keymap.set('v', '<leader>.', '<C-^>', { noremap = true, silent = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -384,10 +387,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader>sq', builtin.quickfix, { desc = '[S]earch [Q]ickfix list' })
-      vim.keymap.set('n', '<leader>sF', function()
-        builtin.find_files { cwd = utils.buffer_dir() }
-      end, { desc = '[S]earch [F]iles in current directory' })
       vim.keymap.set('n', '<leader>sc', '<CMD>Telescope changed_files<CR>', { desc = '[S]earch [C]hanges' })
+      vim.keymap.set('n', '<leader>sF', '<CMD>Telescope frecency<CR>', { desc = '[S]earch [F]recency' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
@@ -412,6 +413,14 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
+    end,
+  },
+
+  -- Telescope Frecency
+  {
+    'nvim-telescope/telescope-frecency.nvim',
+    config = function()
+      require('telescope').load_extension 'frecency'
     end,
   },
 
@@ -523,9 +532,9 @@ require('lazy').setup({
 
           -- Shows inlay hints for the current buffer
           -- lua vim.lsp.inlay_hint.enable(true)
-          -- if vim.lsp.inlay_hint then
-          --   vim.lsp.inlay_hint.enable(true)
-          -- end
+          if vim.lsp.inlay_hint then
+            vim.lsp.inlay_hint.enable(true)
+          end
 
           -- Opens a popup that displays documentation about the word under your cursor
           --  See `:help K` for why this keymap.
@@ -598,7 +607,15 @@ require('lazy').setup({
         -- clangd = {},
         -- gopls = {},
         -- pyright = {},
-        -- rust_analyzer = {},
+        rust_analyzer = {
+          settings = {
+            ['rust-analyzer'] = {
+              check = {
+                command = 'clippy',
+              },
+            },
+          },
+        },
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -624,7 +641,6 @@ require('lazy').setup({
             },
           },
         },
-        rust_analyzer = {},
         tailwindcss = {},
         prettier = {},
         prettierd = {},
@@ -680,7 +696,6 @@ require('lazy').setup({
       }
     end,
   },
-
   { -- Autoformat
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
@@ -723,6 +738,9 @@ require('lazy').setup({
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
         html = { { 'prettierd', 'prettier' } },
+        css = { { 'prettierd', 'prettier' } },
+        scss = { { 'prettierd', 'prettier' } },
+        rust = { 'rustfmt' },
         javascript = { { 'prettierd', 'prettier' } },
         typescript = { { 'prettierd', 'prettier' } },
       },
@@ -949,6 +967,7 @@ require('lazy').setup({
   require 'custom.plugins.oil',
   require 'custom.plugins.oil-git-status',
   require 'custom.plugins.fugitive',
+  require 'custom.plugins.nap',
   require 'custom.plugins.git-conflict',
   require 'custom.plugins.colorizer',
   require 'custom.plugins.undotree',
