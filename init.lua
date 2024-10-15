@@ -35,6 +35,9 @@ vim.opt.showmode = false
 -- Enable break indent
 vim.opt.breakindent = true
 
+-- Set conceal level
+vim.opt.conceallevel = 2
+
 -- Save undo history
 vim.opt.undofile = true
 
@@ -359,6 +362,7 @@ require('lazy').setup({
         -- },
         -- pickers = {}
         defaults = {
+          -- path_display = { 'truncate' },
           buffer_previewer_maker = new_maker,
         },
         extensions = {
@@ -388,7 +392,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader>sq', builtin.quickfix, { desc = '[S]earch [Q]ickfix list' })
       vim.keymap.set('n', '<leader>sc', '<CMD>Telescope changed_files<CR>', { desc = '[S]earch [C]hanges' })
-      vim.keymap.set('n', '<leader>sF', '<CMD>Telescope frecency<CR>', { desc = '[S]earch [F]recency' })
+      vim.keymap.set('n', '<leader>sa', '<CMD>Telescope frecency<CR>', { desc = '[S]earch [F]recency' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
@@ -413,6 +417,20 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
+
+      -- Shortcut for searching your Obsidian configuration files
+      vim.keymap.set('n', '<leader>so', function()
+        local obsidian_paths = {
+          vim.fn.expand '~/vaults/personal',
+          vim.fn.expand '~/vaults/work',
+        }
+
+        builtin.find_files {
+          prompt_title = 'Search Obsidian Files',
+          search_dirs = obsidian_paths,
+          find_command = { 'rg', '--files', '--hidden', '-g', '!.git' },
+        }
+      end, { desc = '[S]earch [O]bsidian files' })
     end,
   },
 
@@ -607,15 +625,7 @@ require('lazy').setup({
         -- clangd = {},
         -- gopls = {},
         -- pyright = {},
-        rust_analyzer = {
-          settings = {
-            ['rust-analyzer'] = {
-              check = {
-                command = 'clippy',
-              },
-            },
-          },
-        },
+        rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -630,17 +640,6 @@ require('lazy').setup({
           filetypes = { 'typescript', 'html', 'ts', 'angular.html', 'angular' },
         },
         pyright = {},
-        hls = {
-          cmd = { 'haskell-language-server-wrapper', '--lsp' },
-          filetypes = { 'haskell', 'lhaskell', 'hs' },
-          single_file_support = true,
-          settings = {
-            haskell = {
-              formattingProvider = 'ormolu',
-              cabalFormattingProvider = 'cabalfmt',
-            },
-          },
-        },
         tailwindcss = {},
         prettier = {},
         prettierd = {},
@@ -862,21 +861,23 @@ require('lazy').setup({
     end,
   },
 
-  { -- You can easily change to a different colorscheme.
+  {
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'navarasu/onedark.nvim',
+    'folke/tokyonight.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      require('onedark').setup {
-        style = 'deep',
-      }
-      require('onedark').load()
+      vim.opt.termguicolors = true
+      vim.cmd.colorscheme 'tokyonight-night'
+      -- vim.cmd [[
+      --   highlight Normal guibg=NONE ctermbg=NONE
+      --   highlight NonText guibg=NONE ctermbg=NONE
+      -- ]]
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -967,7 +968,7 @@ require('lazy').setup({
   require 'custom.plugins.oil',
   require 'custom.plugins.oil-git-status',
   require 'custom.plugins.fugitive',
-  require 'custom.plugins.nap',
+  require 'custom.plugins.obsidian',
   require 'custom.plugins.git-conflict',
   require 'custom.plugins.colorizer',
   require 'custom.plugins.undotree',
@@ -975,6 +976,8 @@ require('lazy').setup({
   require 'custom.plugins.harpoon',
   require 'custom.plugins.vim-be-good',
   require 'custom.plugins.vim-tmux-navigator',
+
+  require('custom.plugins.nap').setup(),
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
