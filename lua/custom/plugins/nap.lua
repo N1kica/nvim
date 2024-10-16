@@ -65,62 +65,60 @@ local cur_file_index = function(files)
   return cur_basename_ind
 end
 
-function M.setup()
-  vim.keymap.set('n', '<C-n>', function()
-    local dir_path = get_dir_path()
-    local files = get_files(dir_path)
-    if files == nil then
-      return
-    end
-    local index = cur_file_index(files)
-    if index + 1 <= #files then
-      local path_sep = package.config:sub(1, 1)
-      local target_path = dir_path .. path_sep .. files[index + 1]
-      vim.cmd('edit ' .. target_path)
-    end
-  end, { desc = 'Prev File' })
-
-  vim.keymap.set('n', '<C-p>', function()
-    local dir_path = get_dir_path()
-    local files = get_files(dir_path)
-    if files == nil then
-      return
-    end
-    local index = cur_file_index(files)
-    if index > 1 then
-      local path_sep = package.config:sub(1, 1)
-      local target_path = dir_path .. path_sep .. files[index - 1]
-      vim.cmd('edit ' .. target_path)
-    end
-  end, { desc = 'Next File' })
-
-  vim.keymap.set('n', '-', function()
-    local cur_path = get_dir_path()
-    local parent_path = vim.fn.fnamemodify(cur_path, ':h')
-    local files = get_files(parent_path)
-    if files == nil or #files == 0 then
-      return
-    end
+vim.keymap.set('n', '<C-n>', function()
+  local dir_path = get_dir_path()
+  local files = get_files(dir_path)
+  if files == nil then
+    return
+  end
+  local index = cur_file_index(files)
+  if index + 1 <= #files then
     local path_sep = package.config:sub(1, 1)
-    local target_path = parent_path .. path_sep .. files[1]
+    local target_path = dir_path .. path_sep .. files[index + 1]
     vim.cmd('edit ' .. target_path)
-  end, { desc = 'Parent File' })
+  end
+end, { desc = 'Prev File' })
 
-  vim.keymap.set('n', '+', function()
-    local cur_path = get_dir_path()
-    local sub_dir = get_subdir(cur_path)
-    if sub_dir == nil then
-      return
-    end
-    local child_path = cur_path .. '/' .. sub_dir
-    local files = get_files(child_path)
-    if files == nil or #files == 0 then
-      return
-    end
+vim.keymap.set('n', '<C-p>', function()
+  local dir_path = get_dir_path()
+  local files = get_files(dir_path)
+  if files == nil then
+    return
+  end
+  local index = cur_file_index(files)
+  if index > 1 then
     local path_sep = package.config:sub(1, 1)
-    local target_path = child_path .. path_sep .. files[1]
+    local target_path = dir_path .. path_sep .. files[index - 1]
     vim.cmd('edit ' .. target_path)
-  end, { desc = 'Child File' })
-end
+  end
+end, { desc = 'Next File' })
+
+vim.keymap.set('n', '-', function()
+  local cur_path = get_dir_path()
+  local parent_path = vim.fn.fnamemodify(cur_path, ':h')
+  local files = get_files(parent_path)
+  if files == nil or #files == 0 then
+    return
+  end
+  local path_sep = package.config:sub(1, 1)
+  local target_path = parent_path .. path_sep .. files[1]
+  vim.cmd('edit ' .. target_path)
+end, { desc = 'Parent File' })
+
+vim.keymap.set('n', '+', function()
+  local cur_path = get_dir_path()
+  local sub_dir = get_subdir(cur_path)
+  if sub_dir == nil then
+    return
+  end
+  local child_path = cur_path .. '/' .. sub_dir
+  local files = get_files(child_path)
+  if files == nil or #files == 0 then
+    return
+  end
+  local path_sep = package.config:sub(1, 1)
+  local target_path = child_path .. path_sep .. files[1]
+  vim.cmd('edit ' .. target_path)
+end, { desc = 'Child File' })
 
 return M
